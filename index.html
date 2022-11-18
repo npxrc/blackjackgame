@@ -19,17 +19,20 @@
         </script>
     </head>
     <body>
-        <div class="app centered">
+        <div class="app centered notfull" id="container">
+            <div id="titlescreen" class="app centered notfull"></div>
+            <div id="game"></div>
+        </div>
             <div id="startbox" class="app centered">
                 <div id="alert">
-                    <h2 value="title">Warning</h2>
+                    <h2 id="warningtitle">Warning</h2>
                     <p>The money being used in the game is not associated with real life, nor your personal identity. <b>You cannot transfer nor withdraw this money through a bank, or exchange it for real funds</b></p>
                 </div>
                 <div id="timer">
                     Wait 5 seconds before continuing.
                 </div>
                 <div id="understand">
-                    <button id="iunderstand" class="app" onclick="start()" disabled="true">I understand.</button>
+                    <button id="iunderstand"onclick="start()" disabled="true">I understand.</button>
                 </div>
             </div>
         </div>

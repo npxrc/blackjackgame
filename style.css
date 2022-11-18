@@ -34,11 +34,18 @@ body {
 
 /* Main Application */
 
-#app, .app{
+#app, .app, button{
     background: #fff;
     border-radius: 4px;
     padding: 10px;
     transition: all 1s;
+}
+.notfull .app{
+    background: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    transition: all 1s;
+    width: 66.666%;
 }
 /* End Section */
 /* Seperators / Spacers */
