@@ -1,0 +1,99 @@
+/* Prerequisites ( Fonts / Body ) */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+body {
+    background: #20262E;
+    padding: 20px;
+    font-family: 'Montserrat', Helvetica;
+    transition: all 1s;
+}
+
+/* End Section */
+/* Positioning */
+
+.centered{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    transition: all 1s;
+}
+
+.pos-right{
+    margin-left: 100%;
+    margin-right: 0%;
+    text-align: right;
+    transition: all 1s;
+}
+
+.pos-right{
+    margin-left: 0%;
+    margin-right: 100%;
+    text-align: left;
+    transition: all 1s;
+}
+
+/* Main Application */
+
+#app, .app{
+    background: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    transition: all 1s;
+}
+/* End Section */
+/* Seperators / Spacers */
+
+.seperator{
+    background: #20262E;
+    height: 5px;
+    width: 100%;
+    border-radius: 5px;
+    transition: all 1s;
+}
+
+.seperator-small{
+    background: #20262E;
+    height: 5px;
+    width: 33.333%;
+    border-radius: 5px;
+    transition: all 1s;
+}
+
+.spacer-small-height{
+    width: 100%;
+    height: 15px;
+    transition: all 1s;
+}
+
+/* End Section */
+/* HTML Tags / Custom Tags */
+
+li{
+    margin: 8px 0;
+    transition: all 1s;
+}
+
+h2{
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: all 1s;
+}
+
+footer{
+    background: #eee;
+    color: black;
+    font-size: small;
+    border-radius: 4px;
+    padding: 10px;
+    transition: all 1s;
+    width: 66.66666%;
+    cursor: pointer;
+}
+
+a{
+    text-decoration: none;
+    transition: all 1s;
+    cursor: pointer;
+}
+
+/* End Section */

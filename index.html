@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Whitejack</title>
+        <link rel="stylesheet" href="style.css"/>
+        <script src="script.js"></script>
+        <meta name="description" content="Not blackjack... OK maybe it is...">
+        <script content="warning">
+            let secondstillstart = 5
+            let interval = setInterval(() => {
+                secondstillstart-=1
+                document.getElementById('timer').innerHTML = "Wait "+secondstillstart+" seconds before continuing."
+            }, 1000);
+            setTimeout(() => {
+                clearInterval(interval)
+                document.getElementById('timer').remove()
+                document.getElementById('iunderstand').disabled=false;
+            }, 5000);
+        </script>
+    </head>
+    <body>
+        <div class="app centered">
+            <div id="startbox" class="app centered">
+                <div id="alert">
+                    <h2 value="title">Warning</h2>
+                    <p>The money being used in the game is not associated with real life, nor your personal identity. <b>You cannot transfer nor withdraw this money through a bank, or exchange it for real funds</b></p>
+                </div>
+                <div id="timer">
+                    Wait 5 seconds before continuing.
+                </div>
+                <div id="understand">
+                    <button id="iunderstand" class="app" onclick="start()" disabled="true">I understand.</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
