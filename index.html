@@ -20,13 +20,14 @@
             setTimeout(() => {
                 document.getElementById('iunderstand').disabled=true;
                 if (localStorage.getItem('gameFinished')=="true"||localStorage.getItem('gameFinished')==true){
-                localStorage.removeItem('gameFinished')
-                clearInterval(interval)
-                clearTimeout(timeout)
-                document.getElementById('timer').remove()
-                start()
-            }
+                    localStorage.removeItem('gameFinished')
+                    clearInterval(interval)
+                    clearTimeout(timeout)
+                    document.getElementById('timer').remove()
+                    start()
+                }
             }, 1);
+            localStorage.removeItem('gameFinished')
         </script>
     </head>
     <body>
