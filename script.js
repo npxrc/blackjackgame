@@ -45,6 +45,7 @@ setTimeout(() => {
 let userBalance = get('balance')
 let usercards = [];
 let dealerCards = [];
+gameover = false;
 //let readableUserCards = "User cards - "
 //let readableDealerCards = "Dealer cards - "
 let drawedcard;
@@ -52,6 +53,10 @@ let bet;
 /*===========*/
 /* Logistics */
 /*===========*/
+function gameFinished(){
+    set('gameFinished','true')
+    location.replace('')
+}
 /* == Enter UI for game == */
 function gameStart(){
     if (document.getElementById('custom').checked){
@@ -72,7 +77,7 @@ function gameStart(){
         bet=(Math.floor(decode(userBalance)))
     }else{alert('You need to select a bet!');return;}
     document.getElementById('titlescreen').innerHTML=''
-    document.getElementById('game').innerHTML=`<div class="app centered dealer" id="dealerStats">Dealer:</div>\n<div class="app centered user" id="userStats">User:</div><br><div class="app centered" id="actions">Actions:<br><button id="hit" onclick="move('hit')">Hit</button><button id="stand" onclick="move('stand')">Stand</button><button id="forfeit" onclick="move('forfeit')">Forfeit (Lose 75% of bet)</button></div>`
+    document.getElementById('game').innerHTML=`<div id="alerts">Alerts:<br><p id="gamealerts">None</p></div><div class="app centered dealer" id="dealerStats">Dealer:</div>\n<div class="app centered user" id="userStats">User:</div><br><div class="app centered" id="actions">Actions:<br><button id="hit" onclick="move('hit')">Hit</button><button id="stand" onclick="move('stand')">Stand</button><button id="forfeit" onclick="move('forfeit')">Forfeit (Lose 75% of bet)</button></div>`
     titlemusic.volume = 0.4
     titlemusic.paused=true
     titlemusic.pause()
@@ -119,31 +124,27 @@ else{
 /* == Win / Lose == */
 /* == == Win == == */
 function win(r){
+    gameover = true;
     set('balance',encode(Math.floor(decode(get('balance')))+(1.25*(bet))))
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You won!\n'+r)
     outputCards()
     usercards=[]
     dealerCards=[]
-    alert('You won!\n'+r)
-    document.getElementById('game').innerHTML=''
-    pageto('mainselector')
-    titlemusic.volume = 0.4
-    titlemusic.play()
+    document.getElementById('actions').innerHTML = '<br>'
+    document.getElementById('gamealerts').innerHTML = `You won! `+r+`\n<br><button onclick="gameFinished()">Back home (+$`+(1.25*(bet))+`)</button>`
 }
 /* == == Lose == == */
 function lose(r){
+    gameover = true;
     set('balance',encode(Math.floor(decode(get('balance')))-(0.75*(bet))))
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You lost!\n'+r)
     outputCards()
     usercards=[]
     dealerCards=[]
-    alert('You lost!\n'+r)
-    document.getElementById('game').innerHTML=''
-    pageto('mainselector')
-    titlemusic.volume = 0.4
-    titlemusic.play()
+    document.getElementById('actions').innerHTML = '<br>'
+    document.getElementById('gamealerts').innerHTML = `You lost! `+r+`\n<br><button onclick="gameFinished()">Back home (-$`+(0.75*(bet))+`)</button>`
 }
 /* == Calculate Card Values == */
 function cardcalc(l){
@@ -238,6 +239,9 @@ function move(move){
     }, timeout);
 }
 function dealerMove(move){
+    if (gameover){
+        return;
+    }
     if (move=="hit"){
         dealerCards.push(draw())
         if (cardcalc(dealerCards)>21){

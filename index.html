@@ -12,13 +12,20 @@
                 document.getElementById('timer').innerHTML = "Wait "+secondstillstart+" seconds before continuing."
                 document.getElementById('iunderstand').disabled=true
             }, 1000);
-            setTimeout(() => {
+            let timeout = setTimeout(() => {
                 clearInterval(interval)
                 document.getElementById('timer').remove()
                 document.getElementById('iunderstand').disabled=false;
             }, 5000);
             setTimeout(() => {
-                document.getElementById('iunderstand').disabled=false
+                document.getElementById('iunderstand').disabled=true;
+                if (localStorage.getItem('gameFinished')=="true"||localStorage.getItem('gameFinished')==true){
+                localStorage.removeItem('gameFinished')
+                clearInterval(interval)
+                clearTimeout(timeout)
+                document.getElementById('timer').remove()
+                start()
+            }
             }, 1);
         </script>
     </head>
