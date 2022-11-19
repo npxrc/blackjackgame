@@ -6,21 +6,25 @@
         <script src="script.js"></script>
         <meta name="description" content="Not blackjack... OK maybe it is...">
         <script content="warning">
-            let secondstillstart = 5
+            let secondstillstart = 5;
             let interval = setInterval(() => {
                 secondstillstart-=1
                 document.getElementById('timer').innerHTML = "Wait "+secondstillstart+" seconds before continuing."
+                document.getElementById('iunderstand').disabled=true
             }, 1000);
             setTimeout(() => {
                 clearInterval(interval)
                 document.getElementById('timer').remove()
                 document.getElementById('iunderstand').disabled=false;
             }, 5000);
+            setTimeout(() => {
+                document.getElementById('iunderstand').disabled=false
+            }, 1);
         </script>
     </head>
     <body>
-        <div class="app centered notfull" id="container">
-            <div id="titlescreen" class="app centered notfull"></div>
+        <div class="app centered" id="container">
+            <div id="titlescreen" class="app centered"></div>
             <div id="game"></div>
         </div>
             <div id="startbox" class="app centered">
@@ -32,7 +36,7 @@
                     Wait 5 seconds before continuing.
                 </div>
                 <div id="understand">
-                    <button id="iunderstand"onclick="start()" disabled="true">I understand.</button>
+                    <button id="iunderstand" onclick="start()" disabled="true">I understand.</button>
                 </div>
             </div>
         </div>
