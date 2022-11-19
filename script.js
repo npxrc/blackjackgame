@@ -45,7 +45,7 @@ setTimeout(() => {
 let userBalance = get('balance')
 let usercards = [];
 let dealerCards = [];
-gameover = false;
+let gameover = false;
 //let readableUserCards = "User cards - "
 //let readableDealerCards = "Dealer cards - "
 let drawedcard;
@@ -137,7 +137,7 @@ function win(r){
 /* == == Lose == == */
 function lose(r){
     gameover = true;
-    set('balance',encode(Math.floor(decode(get('balance')))-(0.75*(bet))))
+    set('balance',encode(Math.floor(decode(get('balance')))-(0.75*(bet)))) //mild insurance so the user doesnt lose all of his/her money
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You lost!\n'+r)
     outputCards()
@@ -217,7 +217,12 @@ function move(move){
                 }
             }, timeout);
         }  else if (cardcalc(dealerCards)<12 && cardcalc(dealerCards)<cardcalc(usercards)){
-            dealerMove('hit')
+            dealerCards.push(draw())
+            if (cardcalc(usercards)>cardcalc(dealerCards)){
+                win("You stood with a higher score than the dealer!")    
+            } else{
+                dealerMove('hit')
+            }
         } else if (cardcalc(dealerCards)<18 && cardcalc(dealerCards)<cardcalc(usercards)){
             win("You stood with a higher score than the dealer!")
         }
