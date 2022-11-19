@@ -62,6 +62,11 @@ function gameStart(){
     if (document.getElementById('custom').checked){
         if (Math.floor(document.getElementById('customAmount').value)>0 && isFinite(document.getElementById('customAmount').value)){
             bet=Math.floor(document.getElementById('customAmount').value)
+            if (bet>decode(get('balance'))){
+                alert('The custom amount cannot be greater than how much money you have!')
+                bet = 0
+                return;
+            }
         } else{
             alert('The custom value needs to be a number, and greater than 1!')
         }
