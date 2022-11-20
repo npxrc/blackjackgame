@@ -10,10 +10,20 @@
     <body>
         <div class="app centered" id="container">
             <div id="game" class="app centered">
-                <div class="app centered dealer" id="dealerStats">Dealer:</div>
-                <div class="app centered user" id="userStats">User:</div>
-                <br>
-                <div class="app centered" id="actions">Actions:<br><button id="hit" onclick="move('hit')">Hit</button><button it="stand" onclick="move('stand')">Stand</button><button id="forfeit" onclick="move('forfeit')">Forfeit (Lose 75% of bet)</button></div>
+                <div id="settings">Music
+                    <div class="seperator"></div><br>
+                    <div id="setAudio">
+                        <p class="title">Set audio:</p>
+                        <div class="settingsbuttons">
+                            <button onclick="setAudio('bass-of-ace')">Bass of Ace - Shahrooz Raoofi (default)</button><br>
+                            <button onclick="setAudio('doors')">ROBLOX Doors - Guiding Light</button><br>
+                            <button onclick="setAudio('amalgam')">Undertale - Amalgam (OST 084)</button>
+                        </div>
+                    </div>
+                    <div>
+                    <button class="clear" onclick="pageto('mainselector')">Back</button>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
