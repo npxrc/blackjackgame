@@ -11,7 +11,7 @@ if (get('titleMusic')==null){
     set('titleMusic','bass-of-ace')
 } else{
     let audioNameTesting = get('titleMusic')
-    if (audioNameTesting=="bass-of-ace"||audioNameTesting=="pathetichouse"||audioNameTesting=="doors"||audioNameTesting=="amalgam"){
+    if (audioNameTesting=="bass-of-ace"||audioNameTesting=="pathetichouse"||audioNameTesting=="doors"||audioNameTesting=="amalgam"||audioNameTesting=="nowsyourchance"){
         titlemusic = new Audio(audioNameTesting+'.mp3')
     }
 }
@@ -34,7 +34,7 @@ function pageto(pg){
     if (pg.toLowerCase()=="mainselector"){
         document.getElementById('titlescreen').innerHTML=`<h1 style="font-size: x-large;">Blackjack</h1><button onclick="pageto('bet')">Start Game</button><br><button onclick="pageto('settings')">Settings</button>`
     } else if (pg.toLowerCase()=="settings"){
-        document.getElementById('titlescreen').innerHTML=`<div id="settings">Music\n<div class="seperator"></div><br>\n<div id="setAudio">\n<p class="title">Set audio:</p>\n<div class="settingsbuttons">\n<button onclick="setAudio('bass-of-ace')">Bass of Ace - Shahrooz Raoofi (default)</button><br>\n<button onclick="setAudio('doors')">ROBLOX Doors - Guiding Light</button><br>\n<button onclick="setAudio('amalgam')">Undertale - Amalgam (OST 084)</button><br><button onclick="setAudio('pathetichouse')">Undertale - Pathetic House (OST: 037)</button>\n</div>\n</div>\n<div>\n<button class="clear" onclick="pageto('mainselector')">Back</button>\n</div>\n</div></div>`
+        document.getElementById('titlescreen').innerHTML=`<div id="settings">Music\n<div class="seperator"></div><br>\n<div id="setAudio">\n<p class="title">Set audio:</p>\n<div class="settingsbuttons">\n<button onclick="setAudio('bass-of-ace')">Bass of Ace - Shahrooz Raoofi (default)</button><br>\n<button onclick="setAudio('doors')">ROBLOX Doors - Guiding Light</button><br>\n<button onclick="setAudio('amalgam')">Undertale - Amalgam (OST 084)</button><br><button onclick="setAudio('pathetichouse')">Undertale - Pathetic House (OST: 037)</button><br><button onclick="setAudio('nowsyourchance')">Deltarune Chapter 2: NOWS YOUR CHANCE TO BE A (OST: 23)</button>\n</div>\n</div>\n<div>\n<button class="clear" onclick="pageto('mainselector')">Back</button>\n</div>\n</div></div>`
     } else if (pg.toLowerCase()=="bet"){
         document.getElementById('titlescreen').innerHTML=`Select bet:<br><div class="seperator"></div><br><label><input type="radio" class="app" id="5prcnt">$`+Math.floor((0.05)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="10prcnt">$`+Math.floor((0.1)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="25prcnt">$`+Math.floor((0.25)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="50prcnt">$`+Math.floor((0.5)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="100prcnt">All in ($`+Math.floor(decode(userBalance))+`)</label><label><input type="radio" class="app" id="custom">Custom</label><br><div id="customValueEntry"></div><div class="seperator"></div><button onclick="gameStart()">Begin</button><button onclick="pageto('mainselector')">Back</button>`
         document.getElementById('custom').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('10prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = `<br>Custom Bet:     <input id="customAmount">`;document.getElementById('customAmount').focus()})
@@ -64,7 +64,7 @@ let bet;
 /*===========*/
 function setAudio(a){
     if (document.getElementById('settings') !== null){ //!==null means that it exists
-        if (a=="bass-of-ace"||a=="pathetichouse"||a=="doors"||a=="amalgam"){
+        if (a=="bass-of-ace"||a=="pathetichouse"||a=="doors"||a=="amalgam"||a=="nowsyourchance"){
             set('titleMusic',a)
             alert('The changes made require the page to be reloaded.')
             set('gameFinished','true')
