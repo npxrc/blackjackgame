@@ -41,6 +41,12 @@ body {
     transition: all 1s;
 }
 
+#alerts{
+    background-color: #EEE;
+    border-radius: 10px;
+    width: 66.66%;
+}
+
 .dealer{
     float:left;
     margin-left:25%;

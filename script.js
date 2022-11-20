@@ -28,7 +28,7 @@ function pageto(pg){
         document.getElementById('titlescreen').innerHTML=`<div id="settings">No settings yet!<br><button onclick="pageto('mainselector')">Back</button></div>`
     } else if (pg.toLowerCase()=="bet"){
         document.getElementById('titlescreen').innerHTML=`Select bet:<br><div class="seperator"></div><br><label><input type="radio" class="app" id="5prcnt">$`+Math.floor((0.05)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="10prcnt">$`+Math.floor((0.1)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="25prcnt">$`+Math.floor((0.25)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="50prcnt">$`+Math.floor((0.5)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="100prcnt">All in ($`+Math.floor(decode(userBalance))+`)</label><label><input type="radio" class="app" id="custom">Custom</label><br><div id="customValueEntry"></div><div class="seperator"></div><button onclick="gameStart()">Begin</button><button onclick="pageto('mainselector')">Back</button>`
-        document.getElementById('custom').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('10prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = `<br>Custom Bet:     <input id="customAmount">`;})
+        document.getElementById('custom').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('10prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = `<br>Custom Bet:     <input id="customAmount">`;document.getElementById('customAmount').focus()})
         document.getElementById('5prcnt').addEventListener('click',()=>{document.getElementById('10prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;document.getElementById('custom').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = '';})
         document.getElementById('10prcnt').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;document.getElementById('custom').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = ''})
         document.getElementById('25prcnt').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('10prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;document.getElementById('custom').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = ''})
@@ -82,7 +82,7 @@ function gameStart(){
         bet=(Math.floor(decode(userBalance)))
     }else{alert('You need to select a bet!');return;}
     document.getElementById('titlescreen').innerHTML=''
-    document.getElementById('game').innerHTML=`<div id="alerts">Alerts:<br><p id="gamealerts">None</p></div><div class="app centered dealer" id="dealerStats">Dealer:</div>\n<div class="app centered user" id="userStats">User:</div><br><div class="app centered" id="actions">Actions:<br><button id="hit" onclick="move('hit')">Hit</button><button id="stand" onclick="move('stand')">Stand</button><button id="forfeit" onclick="move('forfeit')">Forfeit (Lose 75% of bet)</button></div>`
+    document.getElementById('game').innerHTML=`<div id="alerts" class="centered">Alerts:<br><p id="gamealerts">None</p></div><div class="app centered dealer" id="dealerStats">Dealer:</div>\n<div class="app centered user" id="userStats">User:</div><br><div class="app centered" id="actions">Actions:<br><button id="hit" onclick="move('hit')">Hit</button><button id="stand" onclick="move('stand')">Stand</button><button id="forfeit" onclick="move('forfeit')">Forfeit (Lose 75% of bet)</button></div>`
     titlemusic.volume = 0.4
     titlemusic.paused=true
     titlemusic.pause()
@@ -94,9 +94,28 @@ function gameStart(){
     if (cardcalc(dealerCards)>21){win("The dealer went over 21!")}
     outputCards()
 }
-function outputCards(){
-    document.getElementById('userStats').innerHTML = "User: "+cardcalc(usercards)
-    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards[0]+", ?"
+function outputCards(l){
+    if (l){
+        document.getElementById('userStats').innerHTML = "User: "+cardcalc(usercards)
+        document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards
+    } else{
+        let dealerHidden = dealerCards[0]
+        let dealerHiddenVal;
+        if (dealerCards[(dealerCards.length-1)]=="k"||dealerCards[(dealerCards.length-1)]=="j"||dealerCards[(dealerCards.length-1)]=="q"){
+            dealerHiddenVal=cardcalc(dealerCards)-10
+        } else{
+            dealerHiddenVal=cardcalc(dealerCards)-dealerCards[(dealerCards.length-1)]
+        }
+        for (let i=1;i<dealerCards.length;i++){
+            dealerHidden = dealerHidden+", ?"
+        }
+        let userCardsList = usercards[0]
+        for (let i=1;i<usercards.length;i++){
+            userCardsList=userCardsList+", "+usercards[i]
+        }
+        document.getElementById('userStats').innerHTML = "User: "+cardcalc(usercards)+"<br>Cards List: "+userCardsList
+        document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerHidden+"<br>Value: At least "+dealerHiddenVal
+    }
 }
 /* == Starting User == */
 if (userBalance==null){
@@ -134,6 +153,7 @@ function win(r){
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You won!\n'+r)
     outputCards()
+    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards+"<br>Value: "+cardcalc(dealerCards)
     usercards=[]
     dealerCards=[]
     document.getElementById('actions').innerHTML = '<br>'
@@ -146,6 +166,7 @@ function lose(r){
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You lost!\n'+r)
     outputCards()
+    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards+"<br>Value: "+cardcalc(dealerCards)
     usercards=[]
     dealerCards=[]
     document.getElementById('actions').innerHTML = '<br>'
@@ -201,26 +222,23 @@ function move(move){
             document.getElementById('forfeit').disabled=true;
         }
     } else if (move=="stand"){
-        if (cardcalc(dealerCards)>17 && cardcalc(usercards)<cardcalc(dealerCards) && usercards.length<dealerCards.length){    
-            let timeout = Math.floor(Math.random()*3000)
-            timeout+=2000
-            setTimeout(() => {
-                if (Math.floor(Math.random()*3)==1){
-                    if (cardcalc(dealerCards)==17) dealerCards.push('4')
-                    else if (cardcalc(dealerCards)==18) dealerCards.push('3')
-                    else if (cardcalc(dealerCards)==19) dealerCards.push('2')
-                    else if (cardcalc(dealerCards)==20) dealerCards.push('1')
-                } else{
-                    dealerCards.push(draw())
-                    if (cardcalc(dealerCards)>21){
-                        win("The dealer busted and went over 21!")
-                    } else if (cardcalc(usercards)>cardcalc(dealerCards)){
-                        win("You stood with a higher score than the dealer!")
-                    } else if (cardcalc(usercards)<cardcalc(dealerCards)){
-                        lose("You stood with a lower score than the dealer!")
-                    }
+        if (cardcalc(dealerCards)>17 && cardcalc(usercards)<cardcalc(dealerCards) && usercards.length<dealerCards.length){
+            if (Math.floor(Math.random()*3)==1){
+                if (cardcalc(dealerCards)==17) dealerCards.push('4')
+                else if (cardcalc(dealerCards)==18) dealerCards.push('3')
+                else if (cardcalc(dealerCards)==19) dealerCards.push('2')
+                else if (cardcalc(dealerCards)==20) dealerCards.push('1')
+                lose("The dealer got to 21 before you!")
+            } else{
+                dealerCards.push(draw())
+                if (cardcalc(dealerCards)>21){
+                    win("The dealer busted and went over 21!")
+                } else if (cardcalc(usercards)>cardcalc(dealerCards)){
+                    win("You stood with a higher score than the dealer!")
+                } else if (cardcalc(usercards)<cardcalc(dealerCards)){
+                    lose("You stood with a lower score than the dealer!")
                 }
-            }, timeout);
+            }
         }  else if (cardcalc(dealerCards)<12 && cardcalc(dealerCards)<cardcalc(usercards)){
             dealerCards.push(draw())
             if (cardcalc(usercards)>cardcalc(dealerCards)){
