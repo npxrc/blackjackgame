@@ -46,13 +46,14 @@ let userBalance = get('balance')
 let usercards = [];
 let dealerCards = [];
 let gameover = false;
-//let readableUserCards = "User cards - "
-//let readableDealerCards = "Dealer cards - "
 let drawedcard;
 let bet;
 /*===========*/
 /* Logistics */
 /*===========*/
+function gameAlert(a){
+    document.getElementById('gamealerts').innerHTML=a
+}
 function gameFinished(){
     set('gameFinished','true')
     location.replace('')
@@ -92,9 +93,12 @@ function gameStart(){
     dealerCards.push(draw())
     if (cardcalc(usercards)>21){usercards=[];usercards.push(draw());usercards.push(draw());}
     if (cardcalc(dealerCards)>21){win("The dealer went over 21!")}
+    if (cardcalc(usercards)==21){win("You reached 21!")}
     outputCards()
 }
-function outputCards(l){
+function outputCards(){
+    document.getElementById('userStats').innerHTML = "User: "+cardcalc(usercards)
+    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards
     let dealerHidden = dealerCards[0]
     let dealerHiddenVal;
     if (dealerCards[(dealerCards.length-1)]=="k"||dealerCards[(dealerCards.length-1)]=="j"||dealerCards[(dealerCards.length-1)]=="q"){
@@ -110,7 +114,7 @@ function outputCards(l){
         userCardsList=userCardsList+", "+usercards[i]
     }
     document.getElementById('userStats').innerHTML = "User: "+cardcalc(usercards)+"<br>Cards List: "+userCardsList
-    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerHidden+"<br>Value: At least "+dealerHiddenVal
+    document.getElementById('dealerStats').innerHTML = "Dealer: At least "+dealerHiddenVal+"<br>Cards List: "+dealerHidden
 }
 /* == Starting User == */
 if (userBalance==null){
@@ -148,11 +152,15 @@ function win(r){
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You won!\n'+r)
     outputCards()
-    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards+"<br>Value: "+cardcalc(dealerCards)
+    let allDealerCards = dealerCards[0]
+    for (let i=1;i<dealerCards.length;i++){
+        allDealerCards = allDealerCards+", "+dealerCards[i]
+    }
+    document.getElementById('dealerStats').innerHTML = "Dealer: "+cardcalc(dealerCards)+"<br>Cards List: "+allDealerCards
     usercards=[]
     dealerCards=[]
     document.getElementById('actions').innerHTML = '<br>'
-    document.getElementById('gamealerts').innerHTML = `You won! `+r+`\n<br><button onclick="gameFinished()">Back home (+$`+(1.25*(bet))+`)</button>`
+    gameAlert(`You won! `+r+`\n<br><button onclick="gameFinished()">Back home (+$`+(1.25*(bet))+`)</button>`)
 }
 /* == == Lose == == */
 function lose(r){
@@ -165,7 +173,18 @@ function lose(r){
     usercards=[]
     dealerCards=[]
     document.getElementById('actions').innerHTML = '<br>'
-    document.getElementById('gamealerts').innerHTML = `You lost! `+r+`\n<br><button onclick="gameFinished()">Back home (-$`+(0.75*(bet))+`)</button>`
+    gameAlert(`You lost! `+r+`\n<br><button onclick="gameFinished()">Back home (-$`+(0.75*(bet))+`)</button>`)
+}
+/* == == Tie == == */
+function tie(r){
+    gameover = true;
+    console.log('You tied!\n'+r)
+    outputCards()
+    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards+"<br>Value: "+cardcalc(dealerCards)
+    usercards=[]
+    dealerCards=[]
+    document.getElementById('actions').innerHTML = '<br>'
+    gameAlert(`You tied! `+r+`\n<br><button onclick="gameFinished()">Back home (+-0)</button>`)
 }
 /* == Calculate Card Values == */
 function cardcalc(l){
@@ -203,7 +222,7 @@ function move(move){
         if (cardcalc(usercards)>21){ //checks for over 21
             lose("You busted and went over 21!")
             return;
-        } else if (cardcalc(usercards).length==5){ // checks if user has 5 cards
+        } else if (cardcalc(usercards).length>=5){ // checks if user has 5 cards
             win("You took 5 cards without going over 21!")
             return;
         } else if (cardcalc(usercards)==21){ // checks for 21
@@ -216,7 +235,7 @@ function move(move){
             document.getElementById('stand').disabled=true;
             document.getElementById('forfeit').disabled=true;
         }
-    } else if (move=="stand"){
+    }/* else if (move=="stand"){
         if (cardcalc(dealerCards)>17 && cardcalc(usercards)<cardcalc(dealerCards) && usercards.length<dealerCards.length){
             if (Math.floor(Math.random()*3)==1){
                 if (cardcalc(dealerCards)==17) dealerCards.push('4')
@@ -224,25 +243,22 @@ function move(move){
                 else if (cardcalc(dealerCards)==19) dealerCards.push('2')
                 else if (cardcalc(dealerCards)==20) dealerCards.push('1')
                 lose("The dealer got to 21 before you!")
-            } else{
+            } else if (cardcalc(dealerCards)<16){
                 dealerCards.push(draw())
                 if (cardcalc(dealerCards)>21){
                     win("The dealer busted and went over 21!")
                 } else if (cardcalc(usercards)>cardcalc(dealerCards)){
-                    win("You stood with a higher score than the dealer!")
+                    
                 } else if (cardcalc(usercards)<cardcalc(dealerCards)){
                     lose("You stood with a lower score than the dealer!")
                 }
             }
         }  else if (cardcalc(dealerCards)<12 && cardcalc(dealerCards)<cardcalc(usercards)){
-            dealerCards.push(draw())
-            if (cardcalc(usercards)>cardcalc(dealerCards)){
-                win("You stood with a higher score than the dealer!")    
-            }
+            
         } else if (cardcalc(dealerCards)<18 && cardcalc(dealerCards)<cardcalc(usercards)){
-            win("You stood with a higher score than the dealer!")
+            
         }
-    } else if (move=="forfeit"){
+    }*/ else if (move=="forfeit"){
         lose("You forfeited!");
         return;
     }
@@ -264,28 +280,27 @@ function dealerMove(move){
         return;
     }
     if (move=="hit"){
-        dealerCards.push(draw())
-        if (cardcalc(dealerCards)>21){
-            win("The dealer busted and went over 21!")
-            outputCards()
-            return;
-        } else if (cardcalc(usercards).length==5){
-            lose("The dealer took 5 cards without going over 21!")
-            outputCards()
-            return;
-        } else if (cardcalc(dealerCards)==21){
-            lose("The dealer got to 21 before you!")
-            outputCards()
-            return;
-        } else if (cardcalc(dealerCards)>16){
+        if (cardcalc(dealerCards<17)){    
+            dealerCards.push(draw())
+            if (cardcalc(dealerCards)>21){
+                win("The dealer busted and went over 21!")
+                return;
+            } else if (cardcalc(usercards).length>=5){
+                lose("The dealer took 5 cards without going over 21!")
+                return;
+            } else if (cardcalc(dealerCards)==21){
+                lose("The dealer got to 21 before you!")
+                outputCards()
+                return;
+            }else{
+                console.log('Your cards value is '+cardcalc(usercards)+'.\nThe dealers card value is '+cardcalc(dealerCards)+'.')
+                outputCards()
+                document.getElementById('hit').disabled=false;
+                document.getElementById('stand').disabled=false;
+                document.getElementById('forfeit').disabled=false;
+            }
+        } else{
             dealerstand()
-        } 
-        else{
-            console.log('Your cards value is '+cardcalc(usercards)+'.\nThe dealers card value is '+cardcalc(dealerCards)+'.')
-            outputCards()
-            document.getElementById('hit').disabled=false;
-            document.getElementById('stand').disabled=false;
-            document.getElementById('forfeit').disabled=false;
         }
     } else if (move=="stand"){
         dealerstand()
@@ -301,16 +316,20 @@ function draw(){
         drawedcard = "k"
     }else{
         drawedcard = Math.floor(Math.random()*12-1)
-        if (drawedcard<0){
+        if (drawedcard<=0){
             drawedcard = 1
         }
     }
     return drawedcard
 }
 function dealerstand(){
-    if (cardcalc(usercards)>cardcalc(dealerCards) && cardcalc(dealerCards)>16){
-        win("You stood with a higher score than the dealer!")
-    } else if (cardcalc(dealerCards)<17){
+    if (cardcalc(usercards)>cardcalc(dealerCards) && cardcalc(dealerCards)<17){
         dealerMove("hit")
+    } else if (cardcalc(dealerCards)>cardcalc(usercards)){
+        if (Math.floor(Math.random()*10)==6){
+            lose("The dealer stood with a higher score than you!")
+        } else{
+            dealerMove("hit")
+        }
     }
 }
