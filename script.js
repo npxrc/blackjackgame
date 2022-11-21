@@ -34,15 +34,29 @@ function pageto(pg){
     if (pg.toLowerCase()=="mainselector"){
         document.getElementById('titlescreen').innerHTML=`<h1 style="font-size: x-large;">Blackjack</h1><button onclick="pageto('bet')">Start Game</button><br><button onclick="pageto('settings')">Settings</button>`
     } else if (pg.toLowerCase()=="settings"){
-        document.getElementById('titlescreen').innerHTML=`<div id="settings">Music\n<div class="seperator"></div><br>\n<div id="setAudio">\n<p class="title">Set audio:</p>\n<div class="settingsbuttons">\n<button onclick="setAudio('bass-of-ace')">Bass of Ace - Shahrooz Raoofi (default)</button><br>\n<button onclick="setAudio('doors')">ROBLOX Doors - Guiding Light</button><br>\n<button onclick="setAudio('amalgam')">Undertale - Amalgam (OST 084)</button><br><button onclick="setAudio('pathetichouse')">Undertale - Pathetic House (OST: 037)</button><br><button onclick="setAudio('nowsyourchance')">Deltarune Chapter 2: NOWS YOUR CHANCE TO BE A (OST: 23)</button>\n</div>\n</div>\n<div>\n<button class="clear" onclick="pageto('mainselector')">Back</button>\n</div>\n</div></div>`
+        document.getElementById('titlescreen').innerHTML=`<div class="app centered" id="settings">Music<div class="seperator-small centered"></div><br><div id="setAudio">\n<p class="title">Set audio:<br><br><br><br><br><br></p>\n<label><input type="radio" class="app" id="bass-of-ace">Bass of Ace (default) - Shahrooz Raoofi</label><br>\n<label><input type="radio" class="app" id="amalgam">Undertale - Amalgam (OST: 084)</label><br>\n<label><input type="radio" class="app" id="pathetichouse">Undertale - Pathetic House (OST: 037)</label><br>\n<label><input type="radio" class="app" id="nowsyourchance">Deltarune Chapter 2 - NOWS YOUR CHANCE TO BE A (OST: 023)</label><br>\n<label><input type="radio" class="app" id="doors">ROBLOX Doors OST - Guiding Light</label><br>\n<button onclick="saveSettings()">Save Changes</button><br>\n</div>\n<div class="seperator"></div><br><button onclick="pageto('mainselector')">Back</button></div>\n</div>`
+        document.getElementById('bass-of-ace').addEventListener('click',()=>{uncheck(['amalgam','pathetichouse','nowsyourchance','doors']);})
+        document.getElementById('amalgam').addEventListener('click',()=>{uncheck(['bass-of-ace','pathetichouse','nowsyourchance','doors']);})
+        document.getElementById('pathetichouse').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','nowsyourchance','doors']);})
+        document.getElementById('doors').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','nowsyourchance','pathetichouse']);})
+        document.getElementById('nowsyourchance').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','doors','pathetichouse']);})
     } else if (pg.toLowerCase()=="bet"){
         document.getElementById('titlescreen').innerHTML=`Select bet:<br><div class="seperator"></div><br><label><input type="radio" class="app" id="5prcnt">$`+Math.floor((0.05)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="10prcnt">$`+Math.floor((0.1)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="25prcnt">$`+Math.floor((0.25)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="50prcnt">$`+Math.floor((0.5)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="100prcnt">All in ($`+Math.floor(decode(userBalance))+`)</label><label><input type="radio" class="app" id="custom">Custom</label><br><div id="customValueEntry"></div><div class="seperator"></div><button onclick="gameStart()">Begin</button><button onclick="pageto('mainselector')">Back</button>`
-        document.getElementById('custom').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('10prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = `<br>Custom Bet:     <input id="customAmount">`;document.getElementById('customAmount').focus()})
-        document.getElementById('5prcnt').addEventListener('click',()=>{document.getElementById('10prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;document.getElementById('custom').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = '';})
-        document.getElementById('10prcnt').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;document.getElementById('custom').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = ''})
-        document.getElementById('25prcnt').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('10prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('100prcnt').checked=false;document.getElementById('custom').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = ''})
-        document.getElementById('50prcnt').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('10prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('100prcnt').checked=false;document.getElementById('custom').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = ''})
-        document.getElementById('100prcnt').addEventListener('click',()=>{document.getElementById('5prcnt').checked=false;document.getElementById('10prcnt').checked=false;document.getElementById('25prcnt').checked=false;document.getElementById('50prcnt').checked=false;document.getElementById('custom').checked=false;customBetInterval='';document.getElementById('customValueEntry').innerHTML = ''})
+        document.getElementById('custom').addEventListener('click',()=>{uncheck(['5prcnt','10prcnt','25prcnt','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = `<br>Custom Bet:     <input id="customAmount">`;document.getElementById('customAmount').focus()})
+        document.getElementById('5prcnt').addEventListener('click',()=>{uncheck(['custom','10prcnt','25prcnt','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = '';})
+        document.getElementById('10prcnt').addEventListener('click',()=>{uncheck(['5prcnt','custom','25prcnt','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = ''})
+        document.getElementById('25prcnt').addEventListener('click',()=>{uncheck(['5prcnt','10prcnt','custom','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = ''})
+        document.getElementById('50prcnt').addEventListener('click',()=>{uncheck(['5prcnt','10prcnt','25prcnt','custom','100prcnt']);document.getElementById('customValueEntry').innerHTML = ''})
+        document.getElementById('100prcnt').addEventListener('click',()=>{uncheck(['5prcnt','10prcnt','25prcnt','50prcnt','custom']);document.getElementById('customValueEntry').innerHTML = ''})
+    }
+}
+function uncheck(a){
+    if (Array.isArray(a)){
+        for (let i=0;i<a.length;i++){
+            try{
+                document.getElementById(a[i]).checked=false;
+            } catch{}
+        }
     }
 }
 setTimeout(() => {
@@ -62,15 +76,27 @@ let bet;
 /*===========*/
 /* Logistics */
 /*===========*/
-function setAudio(a){
-    if (document.getElementById('settings') !== null){ //!==null means that it exists
-        if (a=="bass-of-ace"||a=="pathetichouse"||a=="doors"||a=="amalgam"||a=="nowsyourchance"){
-            set('titleMusic',a)
-            alert('The changes made require the page to be reloaded.')
-            set('gameFinished','true')
-            location.replace('')
+function saveSettings(){
+    if (document.getElementById('settings')!==null){
+        titlemusic.pause()
+        if (document.getElementById('bass-of-ace').checked){
+            set('titleMusic','bass-of-ace')
+            titlemusic = new Audio('bass-of-ace.mp3')
+        } else if (document.getElementById('amalgam').checked){
+            set('titleMusic','amalgam')
+            titlemusic = new Audio('amalgam.mp3')
+        } else if (document.getElementById('pathetichouse').checked){
+            set('titleMusic','pathetichouse')
+            titlemusic = new Audio('pathetichouse.mp3')
+        } else if (document.getElementById('nowsyourchance').checked){
+            set('titleMusic','nowsyourchance')
+            titlemusic = new Audio('nowsyourchance.mp3')
+        } else if (document.getElementById('doors').checked){
+            set('titleMusic','doors')
+            titlemusic = new Audio('doors.mp3')
         }
-    } 
+        titlemusic.play()
+    }
 }
 function gameFinished(){
     set('gameFinished','true')
