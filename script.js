@@ -11,8 +11,8 @@ if (get('titleMusic')==null){
     set('titleMusic','bass-of-ace')
 } else{
     let audioNameTesting = get('titleMusic')
-    if (audioNameTesting=="bass-of-ace"||audioNameTesting=="pathetichouse"||audioNameTesting=="doors"||audioNameTesting=="amalgam"||audioNameTesting=="nowsyourchance"){
-        titlemusic = new Audio(audioNameTesting+'.mp3')
+    if (audioNameTesting=="bass-of-ace"||audioNameTesting=="pathetichouse"||audioNameTesting=="doors"||audioNameTesting=="amalgam"||audioNameTesting=="nowsyourchance"||audioNameTesting=="goodindahood"||audioNameTesting=="smw3d"){
+        titlemusic = new Audio('music/'+audioNameTesting+'.mp3')
     }
 }
 titlemusic.loop = true;
@@ -34,15 +34,19 @@ function pageto(pg){
     if (pg.toLowerCase()=="mainselector"){
         document.getElementById('titlescreen').innerHTML=`<h1 style="font-size: x-large;">Blackjack</h1><button onclick="pageto('bet')">Start Game</button><br><button onclick="pageto('settings')">Settings</button>`
     } else if (pg.toLowerCase()=="settings"){
-        document.getElementById('titlescreen').innerHTML=`<div class="app centered" id="settings">Music<div class="seperator-small centered"></div><br><div id="setAudio">\n<p class="title">Set audio:<br><br><br><br><br><br></p>\n<label><input type="radio" class="app" id="bass-of-ace">Bass of Ace (default) - Shahrooz Raoofi</label><br>\n<label><input type="radio" class="app" id="amalgam">Undertale - Amalgam (OST: 084)</label><br>\n<label><input type="radio" class="app" id="pathetichouse">Undertale - Pathetic House (OST: 037)</label><br>\n<label><input type="radio" class="app" id="nowsyourchance">Deltarune Chapter 2 - NOWS YOUR CHANCE TO BE A (OST: 023)</label><br>\n<label><input type="radio" class="app" id="doors">ROBLOX Doors OST - Guiding Light</label><br>\n<button onclick="saveSettings()">Save Changes</button><br>\n</div>\n<div class="seperator"></div><br><button onclick="pageto('mainselector')">Back</button></div>\n</div>`
-        document.getElementById('bass-of-ace').addEventListener('click',()=>{uncheck(['amalgam','pathetichouse','nowsyourchance','doors']);})
-        document.getElementById('amalgam').addEventListener('click',()=>{uncheck(['bass-of-ace','pathetichouse','nowsyourchance','doors']);})
-        document.getElementById('pathetichouse').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','nowsyourchance','doors']);})
-        document.getElementById('doors').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','nowsyourchance','pathetichouse']);})
-        document.getElementById('nowsyourchance').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','doors','pathetichouse']);})
+        //Settings
+        /*Updates page*/document.getElementById('titlescreen').innerHTML=`<div class="app centered" id="settings">Music<div class="seperator-small centered"></div><br><div id="setAudio">\n<p class="title">Set audio:<br><br><br><br><br><br></p>\n<label><input type="radio" class="app" id="bass-of-ace">Bass of Ace (default) - Shahrooz Raoofi</label><br>\n<label><input type="radio" class="app" id="amalgam">Undertale - Amalgam (OST: 084)</label><br>\n<label><input type="radio" class="app" id="pathetichouse">Undertale - Pathetic House (OST: 037)</label><br>\n<label><input type="radio" class="app" id="nowsyourchance">Deltarune Chapter 2 - NOWS YOUR CHANCE TO BE A (OST: 023)</label><br>\n<label><input type="radio" class="app" id="doors">ROBLOX Doors OST - Guiding Light</label><br>\n<label><input type="radio" class="app" id="goodindahood">DaDood - Good in Da Hood</label><br>\n<label><input type="radio" class="app" id="smw3d">New Super Mario 3D World (Nintendo) - World 1</label><br>\n<button onclick="saveSettings()">Save Changes</button><br>\n</div>\n<div class="seperator"></div><br><button onclick="pageto('mainselector')">Back</button></div>\n</div>`
+        /*event listeners so user doesnt click button more than once*/document.getElementById('bass-of-ace').addEventListener('click',()=>{uncheck(['amalgam','pathetichouse','nowsyourchance','doors','goodindahood','smw3d']);})
+        document.getElementById('amalgam').addEventListener('click',()=>{uncheck(['bass-of-ace','pathetichouse','nowsyourchance','doors','goodindahood','smw3d']);})
+        document.getElementById('pathetichouse').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','nowsyourchance','doors','goodindahood','smw3d']);})
+        document.getElementById('doors').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','nowsyourchance','pathetichouse','goodindahood','smw3d']);})
+        document.getElementById('nowsyourchance').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','doors','pathetichouse','goodindahood','smw3d']);})
+        document.getElementById('goodindahood').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','doors','pathetichouse','nowsyourchance','smw3d']);})
+        document.getElementById('smw3d').addEventListener('click',()=>{uncheck(['bass-of-ace','amalgam','doors','pathetichouse','nowsyourchance','goodindahood']);})
     } else if (pg.toLowerCase()=="bet"){
-        document.getElementById('titlescreen').innerHTML=`Select bet:<br><div class="seperator"></div><br><label><input type="radio" class="app" id="5prcnt">$`+Math.floor((0.05)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="10prcnt">$`+Math.floor((0.1)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="25prcnt">$`+Math.floor((0.25)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="50prcnt">$`+Math.floor((0.5)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="100prcnt">All in ($`+Math.floor(decode(userBalance))+`)</label><label><input type="radio" class="app" id="custom">Custom</label><br><div id="customValueEntry"></div><div class="seperator"></div><button onclick="gameStart()">Begin</button><button onclick="pageto('mainselector')">Back</button>`
-        document.getElementById('custom').addEventListener('click',()=>{uncheck(['5prcnt','10prcnt','25prcnt','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = `<br>Custom Bet:     <input id="customAmount">`;document.getElementById('customAmount').focus()})
+        //Betting
+        /*updates page*/document.getElementById('titlescreen').innerHTML=`Select bet:<br><div class="seperator"></div><br><label><input type="radio" class="app" id="5prcnt">$`+Math.floor((0.05)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="10prcnt">$`+Math.floor((0.1)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="25prcnt">$`+Math.floor((0.25)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="50prcnt">$`+Math.floor((0.5)*(decode(userBalance)))+`</label><label><input type="radio" class="app" id="100prcnt">All in ($`+Math.floor(decode(userBalance))+`)</label><label><input type="radio" class="app" id="custom">Custom</label><br><div id="customValueEntry"></div><div class="seperator"></div><button onclick="gameStart()">Begin</button><button onclick="pageto('mainselector')">Back</button>`
+        /*event listeners so user doesnt click button more than once*/document.getElementById('custom').addEventListener('click',()=>{uncheck(['5prcnt','10prcnt','25prcnt','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = `<br>Custom Bet:     <input id="customAmount">`;document.getElementById('customAmount').focus()})
         document.getElementById('5prcnt').addEventListener('click',()=>{uncheck(['custom','10prcnt','25prcnt','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = '';})
         document.getElementById('10prcnt').addEventListener('click',()=>{uncheck(['5prcnt','custom','25prcnt','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = ''})
         document.getElementById('25prcnt').addEventListener('click',()=>{uncheck(['5prcnt','10prcnt','custom','50prcnt','100prcnt']);document.getElementById('customValueEntry').innerHTML = ''})
@@ -81,26 +85,37 @@ function saveSettings(){
         titlemusic.pause()
         if (document.getElementById('bass-of-ace').checked){
             set('titleMusic','bass-of-ace')
-            titlemusic = new Audio('bass-of-ace.mp3')
         } else if (document.getElementById('amalgam').checked){
             set('titleMusic','amalgam')
-            titlemusic = new Audio('amalgam.mp3')
         } else if (document.getElementById('pathetichouse').checked){
             set('titleMusic','pathetichouse')
-            titlemusic = new Audio('pathetichouse.mp3')
         } else if (document.getElementById('nowsyourchance').checked){
             set('titleMusic','nowsyourchance')
-            titlemusic = new Audio('nowsyourchance.mp3')
         } else if (document.getElementById('doors').checked){
             set('titleMusic','doors')
-            titlemusic = new Audio('doors.mp3')
+        } else if (document.getElementById('goodindahood').checked){
+            set('titleMusic','goodindahood')
+        } else if (document.getElementById('smw3d').checked){
+            set('titleMusic','smw3d')
         }
+        titlemusic=new Audio(('music/'+((get('titleMusic'))+'.mp3').toString()))
         titlemusic.play()
+        titlemusic.loop = true;
+        titlemusic.volume = 0.4
     }
 }
 function gameFinished(){
-    set('gameFinished','true')
-    location.replace('')
+    document.getElementById('game').innerHTML=''
+    pageto('mainselector')
+    let smallfadein = setInterval(() => {
+        if (Math.floor(titlemusic.volume)>=0.4){
+            clearInterval(smallfadein)
+            titlemusic.volume=0.4
+            return;
+        } else{
+            titlemusic.volume=Math.floor(titlemusic.volume+0.05)
+        }
+    }, 30);
 }
 /* == Enter UI for game == */
 function gameStart(){
@@ -128,9 +143,15 @@ function gameStart(){
     }else{alert('You need to select a bet!');return;}
     document.getElementById('titlescreen').innerHTML=''
     document.getElementById('game').innerHTML=`<div id="alerts" class="centered">Alerts:<br><p id="gamealerts">None</p></div><div class="app centered dealer" id="dealerStats">Dealer:</div>\n<div class="app centered user" id="userStats">User:</div><br><div class="app centered" id="actions">Actions:<br><button id="hit" onclick="move('hit')">Hit</button><button id="stand" onclick="move('stand')">Stand</button><button id="forfeit" onclick="move('forfeit')">Forfeit (Lose 75% of bet)</button></div>`
-    titlemusic.volume = 0.4
-    titlemusic.paused=true
-    titlemusic.pause()
+    let smallfade = setInterval(() => {
+        if (Math.floor(titlemusic.volume)<=0.05){
+            clearInterval(smallfade)
+            titlemusic.volume=0.05
+            return;
+        } else{
+            titlemusic.volume=Math.floor(titlemusic.volume-0.05)
+        }
+    }, 30);
     usercards.push(draw())
     usercards.push(draw())
     dealerCards.push(draw())    
@@ -139,7 +160,7 @@ function gameStart(){
     if (cardcalc(dealerCards)>21){win("The dealer went over 21!")}
     outputCards()
 }
-function outputCards(l){
+function outputCards(){
     let dealerHidden = dealerCards[0]
     let dealerHiddenVal;
     if (dealerCards[(dealerCards.length-1)]=="k"||dealerCards[(dealerCards.length-1)]=="j"||dealerCards[(dealerCards.length-1)]=="q"){
