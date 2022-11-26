@@ -5,8 +5,8 @@ function get(a){return localStorage.getItem(a)}
 function set(a,b){localStorage.setItem(a,b)}
 function encode(a){return btoa(a)}
 function decode(a){return atob(a)}
-let titlemusic;
-if (get('titleMusic')==null){
+let titlemusic;//define music
+if (get('titleMusic')==null){//plays music
     titlemusic = new Audio('bass-of-ace.mp3')
     set('titleMusic','bass-of-ace')
 } else{
@@ -15,7 +15,7 @@ if (get('titleMusic')==null){
         titlemusic = new Audio('music/'+audioNameTesting+'.mp3')
     }
 }
-titlemusic.loop = true;
+titlemusic.loop = true;//sets loop
 function start(){
     if (document.getElementById('timer')==null){
         document.getElementById('startbox').remove()
@@ -24,11 +24,31 @@ function start(){
         titlemusic.play()
     }
 }
-setInterval(()=>{
-    try{
-        document.getElementById('customAmount').value = document.getElementById('customAmount').value.replace(/\D/g,'')
-    } catch(e){}
-},10)
+function saveSettings(){
+    if (document.getElementById('settings')!==null){
+        titlemusic.pause()
+        if (document.getElementById('bass-of-ace').checked){
+            set('titleMusic','bass-of-ace')
+        } else if (document.getElementById('amalgam').checked){
+            set('titleMusic','amalgam')
+        } else if (document.getElementById('pathetichouse').checked){
+            set('titleMusic','pathetichouse')
+        } else if (document.getElementById('nowsyourchance').checked){
+            set('titleMusic','nowsyourchance')
+        } else if (document.getElementById('doors').checked){
+            set('titleMusic','doors')
+        } else if (document.getElementById('goodindahood').checked){
+            set('titleMusic','goodindahood')
+        } else if (document.getElementById('smw3d').checked){
+            set('titleMusic','smw3d')
+        }
+        titlemusic=new Audio(('music/'+((get('titleMusic'))+'.mp3').toString()))
+        titlemusic.play()
+        titlemusic.loop = true;
+        titlemusic.volume = 0.4
+    }
+}
+
 /* == Go to game Page == */
 function pageto(pg){
     if (pg.toLowerCase()=="mainselector"){
@@ -80,30 +100,11 @@ let bet;
 /*===========*/
 /* Logistics */
 /*===========*/
-function saveSettings(){
-    if (document.getElementById('settings')!==null){
-        titlemusic.pause()
-        if (document.getElementById('bass-of-ace').checked){
-            set('titleMusic','bass-of-ace')
-        } else if (document.getElementById('amalgam').checked){
-            set('titleMusic','amalgam')
-        } else if (document.getElementById('pathetichouse').checked){
-            set('titleMusic','pathetichouse')
-        } else if (document.getElementById('nowsyourchance').checked){
-            set('titleMusic','nowsyourchance')
-        } else if (document.getElementById('doors').checked){
-            set('titleMusic','doors')
-        } else if (document.getElementById('goodindahood').checked){
-            set('titleMusic','goodindahood')
-        } else if (document.getElementById('smw3d').checked){
-            set('titleMusic','smw3d')
-        }
-        titlemusic=new Audio(('music/'+((get('titleMusic'))+'.mp3').toString()))
-        titlemusic.play()
-        titlemusic.loop = true;
-        titlemusic.volume = 0.4
-    }
-}
+setInterval(()=>{
+    try{
+        document.getElementById('customAmount').value = document.getElementById('customAmount').value.replace(/\D/g,'')
+    } catch(e){}
+},10)
 function gameFinished(){
     document.getElementById('game').innerHTML=''
     pageto('mainselector')
