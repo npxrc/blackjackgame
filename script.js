@@ -108,15 +108,7 @@ setInterval(()=>{
 function gameFinished(){
     document.getElementById('game').innerHTML=''
     pageto('mainselector')
-    let smallfadein = setInterval(() => {
-        if (Math.floor(titlemusic.volume)>=0.4){
-            clearInterval(smallfadein)
-            titlemusic.volume=0.4
-            return;
-        } else{
-            titlemusic.volume=Math.floor(titlemusic.volume+0.05)
-        }
-    }, 30);
+    titlemusic.volume = 0.4
 }
 /* == Enter UI for game == */
 function gameStart(){
@@ -170,14 +162,18 @@ function outputCards(){
         dealerHiddenVal=cardcalc(dealerCards)-dealerCards[(dealerCards.length-1)]
     }
     for (let i=1;i<dealerCards.length;i++){
-        dealerHidden = dealerHidden+", ?"
+        if (dealerCards[i]==0){
+            continue;
+        } else{
+            dealerHidden = dealerHidden+", ?"
+        }
     }
     let userCardsList = usercards[0]
     for (let i=1;i<usercards.length;i++){
         userCardsList=userCardsList+", "+usercards[i]
     }
     document.getElementById('userStats').innerHTML = "User: "+cardcalc(usercards)+"<br>Cards List: "+userCardsList
-    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerHidden+"<br>Value: At least "+dealerHiddenVal
+    document.getElementById('dealerStats').innerHTML = "Dealer: At least "+dealerHiddenVal+"<br>Cards List:"+dealerHidden
 }
 /* == Starting User == */
 if (userBalance==null){
@@ -215,11 +211,16 @@ function win(r){
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You won!\n'+r)
     outputCards()
-    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards+"<br>Value: "+cardcalc(dealerCards)
+    let finalDealer=dealerCards[0]+", "
+    for (let i=1;i<dealerCards.length;i++){
+        finalDealer+=(dealerCards[i]+", ")
+    }
+    document.getElementById('dealerStats').innerHTML = "Dealer: "+finalDealer+"<br>Value: "+cardcalc(dealerCards)
     usercards=[]
     dealerCards=[]
     document.getElementById('actions').innerHTML = '<br>'
-    document.getElementById('gamealerts').innerHTML = `You won! `+r+`\n<br><button onclick="gameFinished()">Back home (+$`+(1.25*(bet))+`)</button>`
+    let winbet = Math.floor(1.25*Math.floor(bet))
+    document.getElementById('gamealerts').innerHTML = `You won! `+r+`\n<br><button onclick="gameFinished()">Back home (+${winbet})</button>`
 }
 /* == == Lose == == */
 function lose(r){
@@ -228,11 +229,15 @@ function lose(r){
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You lost!\n'+r)
     outputCards()
-    document.getElementById('dealerStats').innerHTML = "Dealer: "+dealerCards+"<br>Value: "+cardcalc(dealerCards)
+    for (let i=1;i<dealerCards.length;i++){
+        finalDealer+=(dealerCards[i]+", ")
+    }
+    document.getElementById('dealerStats').innerHTML = "Dealer: "+finalDealer+"<br>Value: "+cardcalc(dealerCards)
     usercards=[]
     dealerCards=[]
     document.getElementById('actions').innerHTML = '<br>'
-    document.getElementById('gamealerts').innerHTML = `You lost! `+r+`\n<br><button onclick="gameFinished()">Back home (-$`+(0.75*(bet))+`)</button>`
+    let losebet = Math.floor(0.75*Math.floor(bet))
+    document.getElementById('gamealerts').innerHTML = `You lost! `+r+`\n<br><button id="final" onclick="gameFinished()">Back home (-${losebet})</button>`
 }
 /* == Calculate Card Values == */
 function cardcalc(l){
@@ -279,34 +284,14 @@ function move(move){
         }else{ // if they havent won or lost, game is on.
             console.log('Your cards value is '+cardcalc(usercards)+'.\nThe dealers card value is '+cardcalc(dealerCards)+'.')
             outputCards()
-            document.getElementById('hit').disabled=true; //disables the movement so the user cant spam while the dealer is moving.
-            document.getElementById('stand').disabled=true;
+            document.getElementById("hit").disabled=true; //disables the movement so the user cant spam while the dealer is moving.
+            document.getElementById("stand").disabled=true;
             document.getElementById('forfeit').disabled=true;
         }
     } else if (move=="stand"){
-        if (cardcalc(dealerCards)>17 && cardcalc(usercards)<cardcalc(dealerCards) && usercards.length<dealerCards.length){
-            if (Math.floor(Math.random()*3)==1){
-                if (cardcalc(dealerCards)==17) dealerCards.push('4')
-                else if (cardcalc(dealerCards)==18) dealerCards.push('3')
-                else if (cardcalc(dealerCards)==19) dealerCards.push('2')
-                else if (cardcalc(dealerCards)==20) dealerCards.push('1')
-                lose("The dealer got to 21 before you!")
-            } else{
-                dealerCards.push(draw())
-                if (cardcalc(dealerCards)>21){
-                    win("The dealer busted and went over 21!")
-                } else if (cardcalc(usercards)>cardcalc(dealerCards)){
-                    win("You stood with a higher score than the dealer!")
-                } else if (cardcalc(usercards)<cardcalc(dealerCards)){
-                    lose("You stood with a lower score than the dealer!")
-                }
-            }
-        }  else if (cardcalc(dealerCards)<12 && cardcalc(dealerCards)<cardcalc(usercards)){
-            dealerCards.push(draw())
-            if (cardcalc(usercards)>cardcalc(dealerCards)){
-                win("You stood with a higher score than the dealer!")    
-            }
-        } else if (cardcalc(dealerCards)<18 && cardcalc(dealerCards)<cardcalc(usercards)){
+        if (cardcalc(dealerCards)>17 && cardcalc(usercards)<cardcalc(dealerCards)){ //dealer has more than 17, and dealer has more.
+            lose('You stood with a lower score than the dealer!')
+        }else if (cardcalc(dealerCards)<18 && cardcalc(dealerCards)<cardcalc(usercards)){
             win("You stood with a higher score than the dealer!")
         }
     } else if (move=="forfeit"){
@@ -320,13 +305,14 @@ function move(move){
         if (cardcalc(usercards)>cardcalc(dealerCards) && cardcalc(dealerCards)<16){
             dealerMove("hit")
         } else if (cardcalc(dealerCards)>cardcalc(usercards) && cardcalc(dealerCards)>=16){
-            dealerstand()
+            dealerMove("stand")
         } else{
-            dealerMove('hit')
+            dealerMove("hit")
         }
     }, timeout);
 }
 function dealerMove(move){
+    move=move.toString().toLowerCase()
     if (gameover){
         return;
     }
@@ -345,17 +331,28 @@ function dealerMove(move){
             outputCards()
             return;
         } else if (cardcalc(dealerCards)>16){
-            dealerstand()
+            dealerMove("stand")
         } 
         else{
             console.log('Your cards value is '+cardcalc(usercards)+'.\nThe dealers card value is '+cardcalc(dealerCards)+'.')
             outputCards()
-            document.getElementById('hit').disabled=false;
-            document.getElementById('stand').disabled=false;
+            document.getElementById("hit").disabled=false;
+            document.getElementById("stand").disabled=false;
             document.getElementById('forfeit').disabled=false;
         }
     } else if (move=="stand"){
-        dealerstand()
+        if (cardcalc(dealerCards)>cardcalc(usercards)){
+            if (Math.floor(Math.random()*3)==2||cardcalc(dealerCards)>16){
+                lose('The dealer stood with a higher score than you!')
+            } else{
+                dealerMove("hit")
+                document.getElementById("hit").disabled=false;
+                document.getElementById("stand").disabled=false;
+                document.getElementById('forfeit').disabled=false;
+            }
+        } else if (cardcalc(dealerCards)<17){
+            dealerMove("hit")
+        }
     }
 }
 function draw(){
@@ -373,11 +370,4 @@ function draw(){
         }
     }
     return drawedcard
-}
-function dealerstand(){
-    if (cardcalc(usercards)>cardcalc(dealerCards) && cardcalc(dealerCards)>16){
-        win("You stood with a higher score than the dealer!")
-    } else if (cardcalc(dealerCards)<17){
-        dealerMove("hit")
-    }
 }
