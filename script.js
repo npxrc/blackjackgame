@@ -170,10 +170,14 @@ function outputCards(){
     }
     let userCardsList = usercards[0]
     for (let i=1;i<usercards.length;i++){
-        userCardsList=userCardsList+", "+usercards[i]
+        if (usercards[i]==0){
+            continue;
+        } else{
+            userCardsList=userCardsList+", "+usercards[i]
+        }
     }
     document.getElementById('userStats').innerHTML = "User: "+cardcalc(usercards)+"<br>Cards List: "+userCardsList
-    document.getElementById('dealerStats').innerHTML = "Dealer: At least "+dealerHiddenVal+"<br>Cards List:"+dealerHidden
+    document.getElementById('dealerStats').innerHTML = "Dealer: At least "+dealerHiddenVal+"<br>Cards List: "+dealerHidden
 }
 /* == Starting User == */
 if (userBalance==null){
@@ -229,6 +233,7 @@ function lose(r){
     set('balance',encode(Math.floor(decode(get('balance')))))
     console.log('You lost!\n'+r)
     outputCards()
+    let finalDealer=dealerCards[0]+", "
     for (let i=1;i<dealerCards.length;i++){
         finalDealer+=(dealerCards[i]+", ")
     }
